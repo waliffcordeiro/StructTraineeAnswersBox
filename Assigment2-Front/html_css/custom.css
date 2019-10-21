@@ -1,0 +1,21 @@
+h1{
+    color: green;
+    background: #ff7abb;
+}
+
+p{
+    color: red;
+}
+
+li{
+    list-style-type: none;
+    color: blue;
+}
+
+.palavraroxa{
+    color: purple;
+}
+
+.paddinglista{
+    padding-top: 100px;
+}
