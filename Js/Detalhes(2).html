@@ -1,0 +1,97 @@
+<html>
+    <head>
+        <script src="corretor.js"></script>
+        <script src="jquery.js"></script>
+        <style>
+        *
+        {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+        </style>
+
+    </head>
+    <body>
+        <div style="height:10%;width:100%;" id="head"><!--Header-->
+            <img style="position: absolute;left:50%;transform: translate(-50%);" id="logo" src="./struct.png"></img>
+        </div>
+        <hr>
+        <h1>Parte 2 - Aprofundamento</h1>
+        <hr>
+        <div style="width:100%" id="tela">
+        </div>
+        <script>
+            $("#logo")[0].height=$("#head").outerHeight();
+            let tela=document.getElementById("tela");
+            let q1=new Questao(`
+                Em JS, as funções são tratadas como objetos (funções de primeira ordem), mas há situações onde precisamos de referências a funções mas não de seus nomes, como em eventos e callbacks.
+                Nessas situações, podemos usar das chamadas <b>Funções Lambda</b> (ou funções anônimas).<br>
+                Declaramos-nas das seguintes formas:<br>
+                <ul>
+                    <li>function(argumentos){expressões} ( function(a){return 2*a;} )</li>
+                    <li>argumento=>valor ( a=>2*a )</li>
+                    <li>(argumentos)=>valor ( (a,b)=>a+b )</li>
+                    <li>(argumentos)=>{expressões} ( (a,b)=>{a+=b;return 2*b;} )</li>
+                </ul><br>
+                Um exemplo de uso simples: eventos de DOM. Queremos que um elemento responda a um clique com uma mensagem "Clicado!" no console.<br>
+                Ao invés de definir uma função externamente e depois definí-la como o que é chamado pelo evento, podemos simplesmente declarar:<br>
+                <div style="border:solid 1px black">elemento.onclick = ()=>console.log("Clicado!")</div><br><br>
+                No contexto dessa questão, existem funções "Testar_<índice>(função)" que avaliam a corretude de sua função.<br>
+                Complete o código a seguir (usando funções anônimas) de modo que:<br>
+                <ul>
+                    <li>A primeira função (argumento de Testar_1) receba um inteiro e retorne seu quadrado</li>
+                    <li>A segunda função receba duas Strings e retorne a primeira concatenada à segunda</li>
+                    <li>A terceira função receba uma função e retorne o resultado de chamar essa função com os argumentos (1,2)</li>
+                </ul><br>
+                <div style="border:solid 1px black;">
+<pre>Testar_1(|sua função anônima 1|);
+Testar_2(|sua função anônima 2|);
+Testar_2(|sua função anônima 3|);
+</pre>
+                </div>
+                `,tela,{
+                },(ctx)=>{
+                    assert(window.t1,"A função Testar_1 não foi chamada.");
+                    assert(window.t2,"A função Testar_2 não foi chamada.");
+                    assert(window.t3,"A função Testar_3 não foi chamada.");
+                },"Conceitos úteis - Funções anônimas",
+                ()=>{
+                    window.Testar_1=(f)=>{
+                        assert(!f.name,"A primeira função não é anônima (ela se chama "+f.name+")");
+                        for(i in range(0,100))
+                            assert(f(i)==i**2,"A primeira função não tem o comportamento esperado para o número "+i);
+                        window.t1=true;
+                    }
+                    window.Testar_2=(f)=>{
+                        assert(!f.name,"A segunda função não é anônima (ela se chama "+f.name+")");
+                        assert(f("Olá",", mundo!")=="Olá, mundo!","A segunda função não tem o comportamento esperado.");
+                        window.t2=true;
+                    }
+                    window.Testar_3=(f)=>{
+                        assert(!f.name,"A terceira função não é anônima (ela se chama "+f.name+")");
+                        assert(f((a,b)=>(a+b))==3,"A terceira função não tem o comportamento esperado.");
+                        window.t3=true;
+                    }
+                }
+            );
+            let q2=new Questao(`
+                Em JS não podemos comparar diretamente objetos que não sejam strings,números, booleanos ou outros tipos simples/tipos com comparadores definidos. Eis aqui algumas situações contraintuitivas onde isso pode ser um problema:<br>
+                <ul>
+                    <li>[1,2,3]==[1,2,3] => (false)</li>
+                    <li>a={p:10};b={p:10};a==b; => (false)</li>
+                </ul><br>
+                Para resolver esse problema, precisamos comparar todas as propriedades dos objetos que queremos comparar. Para obter essa lista de propriedades, podemos utilizar um loop for(propriedade in objeto) ou a função Object.keys(objeto).<br>
+                Implemente uma função "Comparar(a,b)" que cheque se <b>b</b> possui <b>todas</b> as propriedades de a <b>com os mesmos valores</b>.<br>
+                <b>Importante</b>: Se um dos membros de "a" for um Objeto (e o membro existir e for um objeto em "b"), sua função deve comparar os dois objetos também.<br>
+                `,tela,{
+                    Comparar:Tipo("function")
+                },(ctx)=>{
+                    console.log(ctx.Comparar({a:10,b:30},{a:10,b:20}))
+                    assert(ctx.Comparar({a:10,b:20},{a:10,b:20}),"Sua função falha ao comparar os objetos {a:10,b:20} e {a:10,b:20}");
+                    assert(!ctx.Comparar({a:10,b:30},{a:10,b:20}),"Sua função falha ao comparar os objetos {a:10,b:30} e {a:10,b:20}");
+                    assert(ctx.Comparar({a:10,b:{a:10}},{a:10,b:{a:10}}),"Sua função falha ao comparar os objetos {a:10,b:{a:10}} e {a:10,b:{a:10}}");
+                    assert(!ctx.Comparar({a:10,b:{a:30}},{a:10,b:{a:10}}),"Sua função falha ao comparar os objetos {a:10,b:{a:30}} e {a:10,b:{a:10}}");
+                },"Conceitos úteis - Comparação de Objetos"
+            );
+        </script>
+    </body>
+</html>
