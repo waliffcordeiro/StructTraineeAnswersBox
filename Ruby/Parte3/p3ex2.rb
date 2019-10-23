@@ -1,13 +1,3 @@
-def notas_e_materias n, materias_disponiveis
-    notas = []
-    materias = []
-    for i in (0...n)
-        materias.push(materias_disponiveis.sample)
-        notas.push(rand(0..10))
-    end
-    return notas, materias
-end
-
 def rand_notas n
     notas = []
     for i in (0...n)
@@ -146,16 +136,15 @@ materias_disponiveis = [
     'Eletromagnetismo'    
 ]
 
-# puts "Digite o número de matérias 'n'"
-# n = gets
-# n = n.to_i
-# while n <= 0 and n > 10
-#     puts "Digite um número entre 0 e 10"
-#     n = gets
-#     n.to_i
-# end
+puts "Digite o número de matérias 'n'"
+n = gets
+n = n.to_i
+while n <= 0 and n > 10
+    puts "Digite um número entre 0 e 10"
+    n = gets
+    n.to_i
+end
 
-n = 2
 materias_aplicadas = []
 
 # Fazendo o array de matérias aplicadas e garantindo que não haverão duplicatas
@@ -189,5 +178,10 @@ turmas.each do |turma|
     aprovados.push(turma.aprovados)
 end
 
+n_alunos = turmas[0].n_alunos
+percentual = 100*(turmas[0].n_aprovados.to_f/n_alunos.to_f)
+
+puts "O total de alunos matriculados é: #{n_alunos}"
+puts "O percentual de aprovados é: #{percentual}%"
+puts '-----------------------------------------------'
 puts aprovados
-puts turmas[0].n_aprovados
