@@ -11,7 +11,7 @@ def bissexto?(ano)
     return false
 end
 
-seculo20 = (1900..1999).to_a
+seculo20 = (1900..2000).to_a
 bissextos = []
 
 seculo20.each do |ano|
