@@ -1,0 +1,373 @@
+<html>
+    <head>
+        <script src="corretor.js"></script>
+        <script src="jquery.js"></script>
+        <style>
+        *
+        {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+        </style>
+
+    </head>
+    <body>
+        <div style="height:10%;width:100%;" id="head"><!--Header-->
+            <img style="position: absolute;left:50%;transform: translate(-50%);" id="logo" src="./struct.png"></img>
+        </div>
+        <hr>
+        <h1>Parte 2 - Aplicações</h1>
+        <hr>
+        <div style="width:100%" id="tela">
+        </div>
+        <script>
+            $("#logo")[0].height=$("#head").outerHeight();
+            let tela=document.getElementById("tela");
+
+            let q2=new Questao(
+                `
+                Edson pretende criar um novo serviço de streaming de música. Após consultar alguns sites, ele decidiu fazê-lo em JavaScript.
+                Edson, porém, é somente um visionário, não programador; assim, ele delegou a você a importante tarefa de começar o sistema.<br>
+                Defina uma classe/função construtora "Musica", que possua as seguintes propriedades/comportamentos
+                <ul>
+                    <li>"total" : Número total de músicas</li>
+                    <li>
+                        Suas instâncias devem possuir:
+                        <ul>
+                            <li>"nome" : Nome da música</li>
+                            <li>"tags" : Um vetor de strings</li>
+                            <li>"compos" : Nome de quem compôs</li>
+                            <li>"id" : Um número identificador único (desde que seja único, pode gerá-lo de qualquer forma)</li>
+                            <li>"tocado" : Um número que começa nulo</li>
+                            <li>"tocar" : Um método que incrementa a propriedade "tocado"</li>
+                        </ul>
+                    </li>
+                    <li>Toda vez que uma nova instância é criada, "total" deve ser incrementado</li>
+                    <li>O construtor deve tomar como argumentos "nome","tags", "compos" (nessa ordem)</li>
+                </ul><br>
+                `,tela,{
+                    Musica:Tipo("function")
+                },(ctx)=>{
+                    assert("total" in ctx.Musica,'"total" não existe como propriedade da classe/protótipo "Musica".');
+                    assert(ctx.Musica.total==0,'"Musica.total" não começa nulo.');
+                    let [lux,suk]=[
+                        new ctx.Musica("Lux Aeterna",["World","Classic"],"Cristopher Tin"),
+                        new ctx.Musica("Sukla-Krsne",["World"],"Cristopher Tin")
+                    ];
+                    assert(lux,'new Musica(nome,tags,compos) não funciona.');
+                    assert(suk,'new Musica(nome,tags,compos) não funciona quando chamado múltiplas vezes.');
+                    assert(lux.id!=suk.id,"Os identificadores únicos (id) não são sempre únicos (ao criar duas músicas, elas possuem o mesmo ID).");
+                    assert(!("total" in lux),'"total" deveria ser uma propriedade da classe/protótipo Musica, não das instâncias.');
+                    assert(ctx.Musica.total==2,'"total" não foi incrementado ao criar uma instância.');
+                    let a;
+                    try{
+                        a=objcmp(lux,{
+                            nome:"Lux Aeterna",
+                            tags:["World","Classic"],
+                            compos:"Cristopher Tin",
+                            tocado:Tipo("number")
+                        },"instância de Música");
+                    }catch(e){throw "A instância não possui as propriedades esperadas. ("+e+")"}
+                    assert(lux.tocado==0,'"tocado" não começa nulo nas instâncias de "Musica"');
+                    lux.tocar();
+                    assert(lux.tocado==1,'"tocar" não incrementa "tocado".');
+                    assert(suk.tocado==0,'"tocar" uma música também está incrementando o "tocado" de outras.');
+                },"Sintaxe Básica - Classes, Construtores e Geração de objetos"
+            );
+            let q3=new Questao(
+                `
+                Edson não ficou satisfeito com sua classe; afinal, ele não é programador e na prática tudo o que seus objetos "Musica" fazem é contar o número de vezes que foram "tocados".<br>
+                Para provar que sua estrutura é útil, implemente uma função "selecionar_por_tag" que tome como argumentos "tags" (uma lista de strings) e "musicas", uma lista de objetos "Musica".<br>
+                Sua função deve retornar uma lista/vetor dos objetos "Musica" que possuem todas as tags "tags" em sua lista de tags (propriedade 'tags').<br><br>
+                <b>Dica</b>: Vetores possuem métodos (como indexOf, find e findIndex) para buscar índices de entradas, além de outros como filter e map que facilitam o processamento. Use-os, assim não é necessário implementá-los.<br>
+                <b>Atenção</b>: O verificador automático utilizará também sua resposta da questão 2 como a definição de "Musica".
+                `,tela,{
+                    selecionar_por_tag:Tipo("function")
+                },(ctx)=>{
+                    let musicas=ctx.musicas=[];
+                    for(i of range(0,10))
+                    {
+                        musicas.push(new ctx.Musica("Musica "+i,["a"],"Gerador"));
+                    }
+                    for(i of range(0,10))
+                    {
+                        musicas.push(new ctx.Musica("Musica "+(10+i),["a","b"],"Gerador"));
+                    }
+                    for(i of range(0,10))
+                    {
+                        musicas.push(new ctx.Musica("Musica "+(20+i),["b"],"Gerador"));
+                    }
+                    let selecao=ctx.selecionar_por_tag(["b"],musicas);
+                    let nomes=ctx.nomes={};
+                    assert(selecao.length==20,"Sua função não retornou a quantidade as músicas esperada ("+selecao.length+" de 20)");
+                    for(mus of selecao)
+                    {
+                        assert(!(mus.nome in nomes),"Sua função retornou mais de uma cópia da mesma música.");
+                        nomes[mus.nome]=true;
+                        assert(mus.tags.indexOf("b")!=-1,'Sua função retornou uma música sem a tag esperada. (Tag esperada: "b". Tags da música:['+mus.tags+'])');
+                    }
+                },"Sintaxe Básica - Loops",
+                ()=>{
+                    assert(q2.tentativa,"Sua resposta para a questão 2 não passou (e essa questão depende dela).");
+                }
+            );
+            let q4=new Questao(
+                `
+                Edson ainda não está satisfeito. Ele é uma pessoa bastante visual e não valoriza tanto um programa que não mostra nada na tela.<br>
+                Faça uma função "mostrar_por_tag" que tome como argumento "musicas", uma lista de músicas.<br>
+                Sua função deve
+                <ul>
+                    <li>Capturar o valor (value) digitado pelo usuário no elemento com id "entrada".</li>
+                    <li>Buscar as músicas na lista "musicas" que possuam a tag especificada pelo usuário (utilizando sua função selecionar_por_tag).</li>
+                    <li>Limpar o conteúdo da div "saida".</li>
+                    <li>Gerar, para cada música, uma div com fundo da cor "#101010", texto de cor "#f0f0f0" e com conteúdo bruto (innerHTML) sendo o nome da música.</li>
+                    <li>Adicionar cada div criada à saída (div "saida").</li>
+                </ul><br>
+                O seu programa tem acesso às funções definidas nas questões anteriores para facilitar a implementação (você pode usar sua selecionar_por_tag)<br><br>
+                <b>Atenção</b>: O verificador automático utilizará também sua resposta das questões 2 e 3.<br>
+                <input type="text" placeholder="Esse é o elemento entrada." style="width:50%;height:10%;position:relative;left:50%;transform:translate(-50%,0);background:#f0f0f0;border: solid 1px black;" id="entrada"/>
+                <div style="width:50%;height:50%;position:relative;left:50%;transform:translate(-50%,0);background:#f0f0f0;border: solid 1px black;" id="saida">Essa é a div que conterá sua saída.</div>
+                `,tela,{
+                    mostrar_por_tag:Tipo("function")
+                },(ctx)=>{
+                    $("#entrada").val("b");
+                    ctx.mostrar_por_tag(ctx.musicas);
+                    for(child of $("#saida")[0].children)
+                    {
+                        assert(child.innerHTML.trim() in ctx.nomes,"O conteúdo de uma das DIVs da saída não bate com o nome. ("+child.innerHTML.trim()+")");
+                        assert(child.style.color=="rgb(240, 240, 240)","A cor do texto não é a esperada.");
+                        assert(child.style.background.indexOf("rgb(16, 16, 16)")!=-1,"A cor do fundo não é a esperada.");
+                    }
+                },"DOM - Básico (preferencialmente sem JQuery)",
+                ()=>{
+                    assert(q3.tentativa,"Sua resposta para a questão 3 não passou (e essa questão depende dela).");
+                }
+            );
+            let q5=new Questao(
+                `
+                Edson finalmente está convencido de sua capacidade para desenvolver e lhe cedeu agora a tarefa de trabalhar num pequeno protótipo.<br>
+                Seu primo Nelson já escreveu uma página simples para o serviço e Edson insiste que você não faça alterações diretas nela, mesmo que seu design seja questionável.<br>
+                Sua tarefa é implementar as seguintes funcionalidades com JS+JQuery:<br>
+                <ul>
+                    <li>Encontrar automaticamente quais são os filtros existentes (baseado no innerHTML dos membros da div "col").</li>
+                    <li>Guardar uma lista de filtros que estão ativados.</li>
+                    <li>Quando o usuário clicar em um dos filtros de tag:
+                        <ul>
+                            <li>O botão do filtro deve ser destacado ativando a classe "ativo" se estiver ativo e a classe deve ser removida se não estiver ativo.</li>
+                            <li>Se o filtro estiver desativado, ele deve ser ativado e vice-versa.</li>
+                            <li>Atualizar as músicas que estão sendo mostradas (vide próximo ítem).</li>
+                        </ul>
+                    </li>
+                    <li>Esconder as músicas que não possuem <b>todas</b> as tags listadas nos filtros.</li>
+                    <li>Todos os filtros devem começar desativados.</li>
+                </ul><br>
+                As divs de música possuem id="m"+(identificador único da música)<br>
+                Existe uma variável global chamada "músicas", um vetor que contém objetos "Música"<br><br>
+                <b>Dicas</b>:
+                <ul>
+                    <li>Use os seletores do JQuery ($('{query}')) ao invés do DOM puro.</li>
+                    <li>Você pode fazer sub-seleções no JQuery com $('{query1}').find('{query2}').</li>
+                    <li>$('#id').click(função) !== document.getElementById('id').onclick=função.</li>
+                    <li>$('{query}').addClass("classe") e $('{query}').removeClass("classe") existem.</li>
+                    <li>Use o inspetor de página do seu navegador para analisar a estrutura da página criada por Nelson.</li>
+                </ul><br>
+                <b>Atenção</b>: O verificador automático utilizará também sua resposta das questões 2 e 3.<br>
+
+                <!--CSS fictício do Nelson-->
+                <style>
+                    .container{
+                        width:90%;
+                        height:50vh;
+                        position:relative;
+                        left:50%;
+                        transform:translate(-50%);
+                        border: solid black 1px;
+                    }
+                    .head{
+                        width:100%;
+                        height:10%;
+                        position:absolute;
+                        top:0;
+                        left:0;
+                        text-align:center;
+                        background:black;
+                        color:white;
+                        display:flex;
+                        align-items:center;
+                    }
+                    .col{
+                        width:20%;
+                        height:90%;
+                        position:absolute;
+                        left:0;
+                        top:10%;
+                        background: grey;
+                    }
+                    .show{
+                        width:80%;
+                        height:90%;
+                        position:absolute;
+                        left:20%;
+                        top:10%;
+                        overflow-y:scroll;
+                        overflow-x:hidden;
+                    }
+                    .name{
+                        color:white;
+                        width:100%;
+                        text-align:center;
+                    }
+                    .autor{
+                        color:lightgrey;
+                        width:100%;
+                    }
+                    .autor:before{
+                        content:"By: ";
+                    }
+                    .song{
+                        height:32%;
+                        width:32%;
+                        background:#9f719f;
+                        border-radius:9%;
+                        display:inline-grid;
+                        align-items:center;
+                        border:solid white 1px;
+                    }
+                    .filtro{
+                        width:96%;
+                        position:relative;
+                        left:50%;
+                        transform:translate(-50%);
+                        border-radius:9%;
+                        color:white;
+                        background:black;
+                        border:solid white 1px;
+                        text-align:center;
+                        transition:all .5s;
+                    }
+                    .ativo{
+                        color:black;
+                        background:white;
+                        border:solid black 1px;
+                    }
+                    //Isso aqui é para facilitar a marcação dos filtros selecionados
+                    //Isso é, caso alguém faça isso algum dia, né.
+                    //Assinado: Nelson.
+                </style>
+                `,tela,{
+                },(ctx)=>{
+                    let tlista=[];
+                    assert($(".ativo").length==0,'Os filtros não começaram todos desativados. (há elementos "filtro" com a classe "ativo" antes de qualquer filtro ser ativado)');
+                    assert($(".show").children().length==musicas.length,"Nem todos os elementos de música existem (você deve ter apagado algum por acidente).");
+                    assert($(".show").children().find(":visible").prevObject.length==musicas.length,"Nem todos os elementos de música começam visíveis.");
+                    let testefiltro=(filtro)=>{
+                        let falhas=[];
+                        assert($(".song:visible").toArray()
+                            .map(el=>musicas.find(m=>m.id==el.id.substr(1)))
+                            .map(el=>[el.nome,filtro.map(f=>el.tags.indexOf(f)!=-1).reduce((a,i)=>a=a&&i,1)])
+                            .map(el=>{if(!el[1])falhas.push(el[0]);return el})
+                            .reduce((a,i)=>a=a&&i[1],1),
+                            "O(s) filtro(s) "+filtro+" falhou(falharam) na(s) música(s) "+falhas+" (elas não possuem a tag selecionada).")
+                    }
+
+                    let filtros=["World","Bossa","Jazz","Misc","Brazil","Classic"];
+                    let testes=[0,0,0,0,0,0];
+                    let teste=[];
+                    let i=0;
+                    tudo:
+                    do
+                    {
+                        teste=[];
+                        for(t in testes)
+                            if(testes[t])
+                                teste.push(filtros[t]);
+                        testefiltro(teste);
+                        for(i=0;i<testes.length&&testes[i]!=0;i++){
+                            $("#"+filtros[i])[0].click();                                
+                            testes[i]=0;
+                            break tudo;
+                        }
+                        $("#"+filtros[i])[0].click();
+                        testes[i]=1;
+                    }
+                    while(testes.reduce((a,i)=>a+=i)!=0);
+                },"DOM - JQuery/Teste final",
+                ()=>{
+                    let ctx;
+                    assert(ctx=q3.tentativa,"Sua resposta para a questão 3 não passou (e essa questão depende dela).");
+                    //Setup das músicas
+                    window.musicas=[
+                        new ctx.Musica("Água de beber",["Bossa","Jazz","Brazil"],"Tom Jobim"),
+                        new ctx.Musica("Take Five",["Jazz"],"The Dave Brubeck Quartet"),
+                        new ctx.Musica("Lux Aeterna",["World","Classic"],"Cristopher Tin"),
+                        new ctx.Musica("Galatea's Guitar",["World","Jazz"],"Gabor Szabó"),
+                        new ctx.Musica("リサフランク (ri-sa fu-ra-n-ku)",["Misc"],"Macintosh Plus"),
+                        new ctx.Musica("Bucarest",["World","Jazz"],"Opa Tsupa"),
+                        new ctx.Musica("Trois Francs Six Sous",["Jazz","World"],"Opa Tsupa"),
+                        new ctx.Musica("Fischia Il Vento",["World","Classic"],"Partigiani"),
+                        new ctx.Musica("Gymnopédies",["Classic"],"Erik Satie"),
+                        new ctx.Musica("Clair de Lune",["Classic"],"Debussy"),
+                        new ctx.Musica("Scherzo and Trio",["Jazz"],"Penguin Cafe Orchestra"),
+                        new ctx.Musica("Preciso me encontrar",["Brazil"],"Cartola")
+                    ];
+                    let s=$("#show");
+                    s.html("");
+                    let el=(mus)=>{
+                        let r=document.createElement("div");
+                        r.classList.add("song");
+                        let tmp=document.createElement("div");
+                        tmp.classList.add("name");
+                        tmp.innerHTML=mus.nome;
+                        r.appendChild(tmp);
+                        tmp=document.createElement("div");
+                        tmp.classList.add("autor");
+                        tmp.innerHTML=mus.compos;
+                        r.appendChild(tmp);
+                        r.id="m"+mus.id;
+                        return r;
+                    }
+                    for(emento of window.musicas)
+                    {
+                        s.append(el(emento));
+                    }
+                },
+                `
+                <div class="head">
+                    <pre style="width:100%">Nelsongs/Edsonic</pre>
+                </div>
+                <div class="col">
+                    <div style="width:100%;background:darkgrey;text-align:center">Filtros</div>
+                    <div class="filtro ativo" id="World">World</div>
+                    <div class="filtro" id="Bossa">Bossa</div>
+                    <div class="filtro" id="Jazz">Jazz</div>
+                    <div class="filtro ativo" id="Misc">Misc</div>
+                    <div class="filtro" id="Brazil">Brazil</div>
+                    <div class="filtro" id="Classic">Classic</div>
+                </div>
+                <div class="show" id="show">
+                    <div id="m91" class="song">
+                        <div class="name">As músicas aparecerão</div>
+                        <div class="autor">Eu</div>
+                    </div>
+                    <div id="m37" class="song">
+                        <div class="name">Durante o teste do código.</div>
+                        <div class="autor">Eu</div>
+                    </div>
+                    <div id="m38" class="song">
+                        <div class="name">Os elementos existirão</div>
+                        <div class="autor">Eu</div>
+                    </div>
+                    <div id="m54" class="song">
+                        <div class="name">Antes do início da execução.</div>
+                        <div class="autor">Eu</div>
+                    </div>
+                    <div id="m42" class="song">
+                        <div class="name">(O gerador usa suas respostas)</div>
+                        <div class="autor">Eu</div>
+                    </div>
+                </div>
+                `,
+                "container"
+            );
+        </script>
+    </body>
+</html>

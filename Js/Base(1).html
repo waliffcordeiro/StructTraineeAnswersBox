@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <script src="corretor.js"></script>
+        <script src="jquery.js"></script>
+        <style>
+        *
+        {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+        </style>
+
+    </head>
+    <body>
+        <div style="height:10%;width:100%;" id="head"><!--Header-->
+            <img style="position: absolute;left:50%;transform: translate(-50%);" id="logo" src="./struct.png"></img>
+        </div>
+        <hr>
+        <h1>Parte 1 - Linguagem</h1>
+        <hr>
+        <div style="width:100%" id="tela">
+        </div>
+        <script>
+            $("#logo")[0].height=$("#head").outerHeight();
+            let tela=document.getElementById("tela");
+            let q1=new Questao(`
+                Defina as seguintes variáveis e funções:
+                <ul>
+                    <li>"fib" : Uma função que toma como argumento um inteiro "n" e retorna o "n"-ésimo número de fibonacci (fib(1)=fib(2)=1, fib(3)=2 etc)</li>
+                    <li>"i" : Um inteiro com valor 1984</li>
+                    <li>"v" : Um vetor de inteiros contendo os valores (nessa ordem) 0,1,2 e 3.</li>
+                    <li>"caneta" : Um objeto com as propriedades/métodos
+                        <ul>
+                            <li>"cor" : Uma string.</li>
+                            <li>"fabricante" : Outra string.</li>
+                            <li>"escrever" : Uma função que toma como argumento uma string e a escreve no console.</li>
+                        </ul>
+                    </li>
+                </ul>
+                `,tela,{
+                    fib:Tipo("function"),
+                    i:1984,
+                    v:[0,1,2,3],
+                    caneta:{
+                        cor:Tipo("string"),
+                        fabricante:Tipo("string"),
+                        escrever:Tipo("function")
+                    }
+                },(ctx)=>{
+                    ctx.caneta.escrever("teste");
+                    assert(_console.buf=="teste",'O método "escrever" da caneta não está tendo o comportamento esperado.');
+                    let fib=(i)=>{if(i<=2)return 1;return fib(i-1)+fib(i-2);}
+                    for(i of [3,4,5,6,7,8,9,10])assert(ctx.fib(i)==fib(i),"A função fib não está funcionando corretamente para i="+i+".");
+                },"Sintaxe Básica - Variáveis e funções"
+            );
+        </script>
+    </body>
+</html>

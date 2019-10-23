@@ -1,0 +1,70 @@
+Aplicações:
+
+let gabaritos=[,
+`class Musica{
+    constructor(nome,tags,compos)
+    {
+        this.nome=nome;
+        this.id=Musica.total;
+        this.tags=tags;
+        this.compos=compos;
+        this.nota=0;
+        this.num_av=0;
+        this.tocado=0;
+        Musica.total++;
+    }
+    tocar(){
+        this.tocado++;
+    }
+}
+Musica.total=0;`,
+`function selecionar_por_tag(tags,musicas)
+{
+    let ret=musicas;
+    for(tag of tags)ret=ret.filter((a)=>a.tags.indexOf(tag)!=-1);
+    return ret;
+}`,
+`function mostrar_por_tag(musicas)
+{
+    let tag=document.getElementById("entrada").value;
+    let out=document.getElementById("saida");
+    out.innerHTML="";
+    let sel=selecionar_por_tag(tag,musicas);
+    let el;
+    for(m of sel)
+    {
+        el=document.createElement("div");
+        el.innerHTML=m.nome;
+        el.style.width="10%";
+        el.style.color="#f0f0f0";
+        el.style.background="#101010";
+        el.style.float="left";
+        out.appendChild(el);
+    }
+}`,
+`function mostrar_musicas(){
+    let filtros=[];
+    for(filtro of $(".filtro.ativo"))
+        filtros.push(filtro.innerHTML);
+    for(musica of musicas)
+    {
+        if(filtros.length==0||filtros.map(filtro=>musica.tags.indexOf(filtro)!=-1).reduce((acc,el)=>acc=acc&&el))
+            $("#m"+musica.id).show();
+        else
+            $("#m"+musica.id).hide();
+    }
+}
+$(".filtro").click(e=>{
+    let el=e.currentTarget;
+    if(el.classList.contains("ativo"))
+        el.classList.remove("ativo");
+    else
+        el.classList.add("ativo");
+    mostrar_musicas();
+})
+for(filtro of $(".filtro"))
+{
+    filtro.classList.remove("ativo");
+}
+mostrar_musicas();`
+];
